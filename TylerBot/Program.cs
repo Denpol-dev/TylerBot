@@ -27,7 +27,7 @@ internal class Program
             "Тревор"
         ];
 
-        var isTest = true;
+        var isTest = false;
 
         var me = await bot.GetMe();
         await bot.DeleteWebhook();
