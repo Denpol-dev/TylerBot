@@ -233,7 +233,7 @@ internal class Program
         var timer = new System.Timers.Timer(sec);
         timer.Elapsed += async (sender, e) =>
         {
-            if (DateTime.Now.Hour == 18 || isTest)
+            if (DateTime.UtcNow.Hour == 13 || isTest)
             {
                 foreach (var chat in chats.Where(c => c.Step == 1))
                 {
