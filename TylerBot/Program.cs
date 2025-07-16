@@ -15,6 +15,8 @@ internal class Program
         using var cts = new CancellationTokenSource();
         var bot = new TelegramBotClient(token, cancellationToken: cts.Token);
 
+        List<int> steps = [1, 3, 5];
+
         List<string> names =
         [
             "Корнелиус",
@@ -235,7 +237,7 @@ internal class Program
         {
             if (DateTime.UtcNow.Hour == 13 || isTest)
             {
-                foreach (var chat in chats.Where(c => c.Step == 1))
+                foreach (var chat in chats.Where(c => steps.Contains(c.Step)))
                 {
                     switch (chat.Step)
                     {
