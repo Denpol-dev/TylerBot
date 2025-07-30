@@ -1,13 +1,15 @@
-﻿using Telegram.Bot;
+﻿using Microsoft.EntityFrameworkCore;
+using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using TylerBot;
 using TylerBot.Models;
 
 internal class Program
 {
     private static readonly ThreadLocal<Random> random =
-        new ThreadLocal<Random>(() => new Random(Guid.NewGuid().GetHashCode()));
+        new(() => new Random(Guid.NewGuid().GetHashCode()));
 
     private static async Task Main(string[] args)
     {
@@ -31,11 +33,12 @@ internal class Program
 
         var isTest = false;
 
+        using var dbContext = new AppDbContext();
+        await ChatModel.InitDB();
+
         var me = await bot.GetMe();
         await bot.DeleteWebhook();
         await bot.DropPendingUpdates();
-
-        var chats = new List<ChatModel>();
 
         string GetName()
         {
@@ -54,6 +57,8 @@ internal class Program
         async Task FirstStep(ChatModel chat)
         {
             chat.Step = 2;
+            dbContext.Chats.Update(chat);
+            await dbContext.SaveChangesAsync();
 
             await bot.SendMessage(
                 chatId: chat.Id,
@@ -85,6 +90,8 @@ internal class Program
                     cancellationToken: cts.Token);
 
                 chat.Step = 3;
+                dbContext.Chats.Update(chat);
+                await dbContext.SaveChangesAsync();
             }
             else
             {
@@ -105,6 +112,8 @@ internal class Program
         async Task ThirdStep(ChatModel chat)
         {
             chat.Step = 4;
+            dbContext.Chats.Update(chat);
+            await dbContext.SaveChangesAsync();
 
             await bot.SendMessage(
                 chatId: chat.Id,
@@ -117,6 +126,9 @@ internal class Program
             if (result == "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiVHlsZXIiLCJhZG1pbiI6dHJ1ZX0.qRhkl3xJwBqzc18YYbbgJmJD9npebBZ3XyOpixeu0BM")
             {
                 chat.Step = 5;
+                dbContext.Chats.Update(chat);
+                await dbContext.SaveChangesAsync();
+
                 await bot.SendMessage(
                     chatId: chat.Id,
                     text: $"Руперт... Ха! Эти идиоты из Blackwater думали, что их «защита» что-то значит.\r\nЯ только что наблюдал, как их сервера превратились в тыкву.\r\n\r\nНо самое смешное?\r\nУ них тоже сработал этот долбаный Cerberus.\r\nИ знаешь что? Связь продержалась чуть дольше...\r\n\r\nКоординаты:\r\n55.1... 61.4... (сигнал потерян)\r\n\r\nВидишь? На этот раз больше символов.\r\nЗначит, мы на правильном пути.\r\n\r\nСледующая цель — MantiCore Security.\r\nДобудь полные координаты. Сотри их к чертям.\r\n\r\n—T",
@@ -141,6 +153,8 @@ internal class Program
         async Task FifthStep(ChatModel chat)
         {
             chat.Step = 6;
+            dbContext.Chats.Update(chat);
+            await dbContext.SaveChangesAsync();
 
             await bot.SendMessage(
                 chatId: chat.Id,
@@ -166,16 +180,18 @@ internal class Program
                         {
                             await bot.SendMessage(
                                 chatId: chat.Id,
-                                text: $"Ха! Эти идиоты даже не догадываются, что теперь их \"Cerberus\" работает на нас.  \r\nТолько что на их главном экране всплыло:  \r\nСБОР ГРУППЫ: 55.75319, 37.84206 | 18:00\r\nЯ залью их сервера кислотой. Ты же разберёшься с этим сбором?\r\n—T",
+                                text: $"Ха! Эти идиоты даже не догадываются, что теперь их \"Cerberus\" работает на нас.  \r\nТолько что на их главном экране всплыло:  \r\n**nCERBERUS -> 55.75319, 37.84206 | 21.08 | 12:00**\r\nЯ залью их сервера кислотой. Ты же разберёшься с этим сбором?\r\n> P.S. Не одевайся в парадное. Будет грязно. \r\n\r\n> —T",
                                 cancellationToken: cts.Token);
                             chat.Step = 7;
+                            dbContext.Chats.Update(chat);
+                            await dbContext.SaveChangesAsync();
                             break;
                         }
                     case 2:
                         {
                             await bot.SendMessage(
                                 chatId: chat.Id,
-                                text: $"Вот и всё. Их \"защита\" теперь — дымящаяся груда металла.  \r\n> На последнем экране я успел разглядеть:  \r\n> **ВСЕ АГЕНТЫ -> 55.75319, 37.84206 | КОД: KILLBILL** \r\n> Интересно, они знают, что мы придём первыми?  \r\n>  \r\n> —T",
+                                text: $"Вот и всё. Их \"защита\" теперь — дымящаяся груда металла.  \r\n> На последнем экране я успел разглядеть:  \r\n> **CERBERUS -> 55.75319, 37.84206 | 21.08 | 12:00** \r\n> Интересно, они знают, что мы придём первыми?  \r\n> P.S. Не одевайся в парадное. Будет грязно. \r\n\r\n> —T",
                                 cancellationToken: cts.Token);
                             break;
                         }
@@ -183,7 +199,7 @@ internal class Program
                         {
                             await bot.SendMessage(
                                 chatId: chat.Id,
-                                text: $"Готово. Их серверная теперь напоминает ад.  \r\n> На последнем уцелевшем экране:  \r\n> **FINAL ORDER: 55.75319, 37.84206 | 18:00 | NO SURVIVORS**  \r\n>  \r\n> *пауза*  \r\n>  \r\n> P.S. Принеси зажигательную смесь. Нам нужно \"очистить\" территорию.  \r\n>  \r\n> —T",
+                                text: $"Готово. Их серверная теперь напоминает ад.  \r\n> На последнем уцелевшем экране:  \r\n> **CERBERUS -> 55.75319, 37.84206 | 21.08 | 12:00** \r\n> P.S. Не одевайся в парадное. Будет грязно. \r\n\r\n> —T",
                                 cancellationToken: cts.Token);
                             break;
                         }
@@ -199,38 +215,47 @@ internal class Program
                         {
                             await bot.SendMessage(
                                 chatId: chat.Id,
-                                text: $"Не-а. Их система плюётся ошибками.  \r\nНо я только что видел, как на сервере мелькнуло:  \r\nCERBERUS: 55.1... Сигнал пропал.\r\nПопробуй ещё раз. Или мне придётся импровизировать.  \r\n—T",
+                                text: $"Не-а. Их система плюётся ошибками.  \r\nНо я только что видел, как на сервере мелькнуло:  \r\n**CERBERUS -> 55.7... Сигнал пропал.\r\nПопробуй ещё раз. Или мне придётся импровизировать.  \r\n\r\n—T",
                                 cancellationToken: cts.Token);
+                            chat.Attempt++;
+                            dbContext.Chats.Update(chat);
+                            await dbContext.SaveChangesAsync();
                             break;
                         }
                     case 2:
                         {
                             await bot.SendMessage(
                                 chatId: chat.Id,
-                                text: $"Блять! Они активировали блокировку.  \r\nНо перед этим я видел:  \r\n61.4XXXX...** И экран, сука, погас\r\nОсталась последняя попытка. Не облажайся. \r\n—T",
-                                cancellationToken: cts.Token); https://md5decrypt.net/en/Xor/
+                                text: $"Блять! Они активировали блокировку.  \r\nНо перед этим я видел:  \r\n**CERBERUS -> 55.7319,... И экран, сука, погас\r\nОсталась последняя попытка. Не облажайся. \r\n\r\n—T",
+                                cancellationToken: cts.Token);
 
                             await Task.Delay(7000);
 
                             await bot.SendMessage(
                                 chatId: chat.Id,
-                                text: $"Если тебе поможет. На одном из компов был открыт этот сайт https://md5decrypt.net/en/Xor/. Не облажайся. \r\n—T",
-                                cancellationToken: cts.Token); 
+                                text: $"Если тебе поможет. На одном из компов был открыт этот сайт https://md5decrypt.net/en/Xor/. Не облажайся. \r\n\r\n—T",
+                                cancellationToken: cts.Token);
+                            chat.Attempt++;
+                            dbContext.Chats.Update(chat);
+                            await dbContext.SaveChangesAsync();
                             break;
                         }
                     case 3:
                         {
                             await bot.SendMessage(
                                 chatId: chat.Id,
-                                text: $"Всё. Система заблокирована намертво. \r\nТы облажался.\r\n —T",
+                                text: $"Всё. Система заблокирована намертво. \r\nТы облажался.\r\n\r\n —T",
                                 cancellationToken: cts.Token);
 
-                            await Task.Delay(10000);
+                            await Task.Delay(11000);
 
                             await bot.SendMessage(
                                 chatId: chat.Id,
-                                text: $"Надоело это дерьмо. \r\nЯ просто выстрелил в их \"неприступный\" сервер.  \r\nПеред смертью он успел показать:  \r\nCERBERUS FINAL: 55.15962, 61.40261 | CODE: BLOODBATH\r\nP.S. Соберись. Будет грязно. \r\n\r\n—T",
+                                text: $"Надоело это дерьмо. \r\nЯ просто выстрелил в их \"неприступный\" сервер.  \r\nПеред смертью он успел показать:  \r\n**CERBERUS -> 55.75319, 37.84206 | 21.08 | 12:00**\r\nP.S. Соберись. Будет грязно. \r\n\r\n—T",
                                 cancellationToken: cts.Token);
+                            chat.Attempt++;
+                            dbContext.Chats.Update(chat);
+                            await dbContext.SaveChangesAsync();
                             break;
                         }
                     default:
@@ -247,7 +272,7 @@ internal class Program
         {
             if (DateTime.UtcNow.Hour == 13 || isTest)
             {
-                foreach (var chat in chats.Where(c => steps.Contains(c.Step)))
+                foreach (var chat in dbContext.Chats.Where(c => steps.Contains(c.Step)))
                 {
                     switch (chat.Step)
                     {
@@ -307,11 +332,13 @@ internal class Program
 
             if (msg.Type == MessageType.Text)
             {
-                var chat = chats.FirstOrDefault(c => c.Id == msg.Chat.Id);
+                var chat = await dbContext.Chats.FirstOrDefaultAsync(c => c.Id == msg.Chat.Id);
 
                 if (chat == null)
                 {
-                    chats.Add(new ChatModel(msg));
+                    chat = new ChatModel(msg);
+                    dbContext.Chats.Add(chat);
+                    await dbContext.SaveChangesAsync();
                     await SendWelcomeMessage(msg.Chat.Id);
                 }
                 else
@@ -339,7 +366,7 @@ internal class Program
                                 {
                                     await bot.SendMessage(
                                         chatId: msg.Chat.Id,
-                                        text: $"Ты проебал все попытки, но координаты у нас есть.\r\n55.75319, 37.84206  \r\n18:00. Без опозданий.\r\nP.S. Возьми сменную одежду. Будет... мокро.\r\n\r\n—T  ",
+                                        text: $"Ты проебал все попытки, но координаты у нас есть.\r\n55.75319, 37.84206 \r\n21.08. 12:00. Без опозданий.\r\nP.S. Возьми сменную одежду. Будет... мокро.\r\n\r\n—T  ",
                                         cancellationToken: cts.Token);
                                 }
                                 else
