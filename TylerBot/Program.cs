@@ -270,7 +270,7 @@ internal class Program
         var timer = new System.Timers.Timer(sec);
         timer.Elapsed += async (sender, e) =>
         {
-            if (DateTime.UtcNow.Hour == 13 || isTest)
+            if (DateTime.UtcNow.Hour == 16 || isTest)
             {
                 foreach (var chat in dbContext.Chats.Where(c => steps.Contains(c.Step)))
                 {
