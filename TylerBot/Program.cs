@@ -286,7 +286,7 @@ internal class Program
                             }
                         case 3:
                             {
-                                if (DateTime.UtcNow.Date == new DateTime(2025, 8, 7))
+                                if (DateTime.UtcNow.Date == new DateTime(2025, 8, 11))
                                 {
                                     await ThirdStep(chat);
                                 }
