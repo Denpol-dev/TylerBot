@@ -117,7 +117,7 @@ internal class Program
 
             await bot.SendMessage(
                 chatId: chat.Id,
-                text: $"{GetName()}, эти ублюдки из Blackwater прикрылись какой-то JWT хуйнёй.\r\nЯ взял их техника в подвале - пять минут, и он уже пел как канарейка.\r\nРазмял его знатно, но этот чертов ублюдок верный токен так и не дал.\r\n\r\nВот что я смог выбить из него: \r\nКлюч - \"blackwatersecretkeypotectcerebrus\" плюс текущий год (как будто это что-то меняет). \r\nАх да, еще там было о secret key protect cerebrus... \r\nЧто-то такое он бормотал, перед тем, как отключиться.\r\nКакой-то кривой токен: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiUm9iZXJ0IFBhdWxzb24iLCJhZG1pbiI6ZmFsc2V9.VF0bKWxm6qISxaSJiIVKQGrnVRiMQpryA0qx536Lbt4\r\n\r\nСделай мне рабочий. Для пользователя 'Tyler'. А еще дай мне права админа.\r\nЧтобы всё тут взлетело нахуй.\r\n\r\n—T",
+                text: $"{GetName()}, оказывается, эта сволочь мне напела совсем не тот код. \r\nНо ничего - я нашел пташку посговорчивее. \r\nНастоящий ключ - \"blackwatersecretkeyprotectcerebrus\". \r\nРаботй.\r\n\r\n—T",
                 cancellationToken: cts.Token);
         }
 
