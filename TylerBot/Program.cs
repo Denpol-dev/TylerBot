@@ -399,8 +399,7 @@ internal class Program
             }
         }
 
-        while (Console.ReadKey(true).Key != ConsoleKey.Escape) ;
-        await cts.CancelAsync();
+        await Task.Delay(Timeout.Infinite, cts.Token);
 
         timer.Stop();
     }
