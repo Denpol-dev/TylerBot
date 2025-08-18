@@ -262,8 +262,6 @@ internal class Program
                         break;
                 }
             }
-
-            chat.Step = 7;
         }
 
         var sec = 60_000;
