@@ -193,6 +193,9 @@ internal class Program
                                 chatId: chat.Id,
                                 text: $"Вот и всё. Их \"защита\" теперь — дымящаяся груда металла.  \r\n> На последнем экране я успел разглядеть:  \r\n> **CERBERUS -> 55.15961, 61.40261 | 21.08 | 12:00** \r\n> Интересно, они знают, что мы придём первыми?  \r\n> P.S. Не одевайся в парадное. Будет грязно. \r\n\r\n> —T",
                                 cancellationToken: cts.Token);
+                            chat.Step = 7;
+                            dbContext.Chats.Update(chat);
+                            await dbContext.SaveChangesAsync();
                             break;
                         }
                     case 3:
@@ -201,6 +204,9 @@ internal class Program
                                 chatId: chat.Id,
                                 text: $"Готово. Их серверная теперь напоминает ад.  \r\n> На последнем уцелевшем экране:  \r\n> **CERBERUS -> 55.15961, 61.40261 | 21.08 | 12:00** \r\n> P.S. Не одевайся в парадное. Будет грязно. \r\n\r\n> —T",
                                 cancellationToken: cts.Token);
+                            chat.Step = 7;
+                            dbContext.Chats.Update(chat);
+                            await dbContext.SaveChangesAsync();
                             break;
                         }
                     default:
@@ -254,6 +260,7 @@ internal class Program
                                 text: $"Надоело это дерьмо. \r\nЯ просто выстрелил в их \"неприступный\" сервер.  \r\nПеред смертью он успел показать:  \r\n**CERBERUS -> 55.15961, 61.40261 | 21.08 | 12:00**\r\nP.S. Соберись. Будет грязно. \r\n\r\n—T",
                                 cancellationToken: cts.Token);
                             chat.Attempt++;
+                            chat.Step = 7;
                             dbContext.Chats.Update(chat);
                             await dbContext.SaveChangesAsync();
                             break;
